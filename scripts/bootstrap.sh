@@ -7,4 +7,7 @@ flask --app src/app run
 gunicorn --config gunicorn_config.py src.app:app
 
 # Docker
-docker run -it --name {container name} -p 8080:8080 {image name}
+docker run -p 8080:8080 {image name}
+
+# Curl
+curl "
