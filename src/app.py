@@ -2,8 +2,8 @@ from flask import Flask
 from flask import jsonify
 from flask import request
 
-from ml_classifier import EmotionDetection
-from utils import face_detec, image_preprocessing, image64_decode
+from src.ml_classifier import EmotionDetection
+from src.utils import face_detec, image_preprocessing, image64_decode
 
 # Machine Learning Model class
 CLASS_NAMES = ['angry', 'fear', 'happy', 'neutral', 'sad'] 
