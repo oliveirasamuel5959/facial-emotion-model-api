@@ -20,9 +20,15 @@ data_list = []
 def get_default_predict():
     return jsonify(data_list)
 
-@app.route('/get/predict', methods=['GET'])
-def get_predict():
-    return jsonify(data_list)
+@app.route('/v1/predictions/<string:name>', methods=['GET'])
+def get_predict(name):
+    try:        
+        if data_list[0]['author'] == name:
+            return jsonify(data_list)
+        else:
+            return jsonify(message={"message": "Name not found"})
+    except IndexError:
+        return jsonify(message={"message": "IndexError"})
 
 @app.route('/test/predict', methods=['POST'])
 def test_predict():
@@ -42,7 +48,7 @@ def test_predict():
         return jsonify({"message": "Data missing"})
     
 
-@app.route('/predict', methods=['POST'])
+@app.route('/v1/predictions', methods=['POST'])
 def predict():
     if request.method == 'POST':
         data = request.get_json()
@@ -54,6 +60,7 @@ def predict():
             
         data_pred["prediction"] = pred
         data_pred["accuracy"] = acc
+        data_pred["author"] = data['images'][0]['author']
         data_list.append(data_pred)
         
         return jsonify({'message': 'Data received', 'image': data['images'][0]['name']}), 201
