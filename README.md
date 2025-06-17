@@ -1,11 +1,14 @@
+# *Facial Emotion Recognition Computer Vision FLASK API*
+
 ## **Table of Contents**
-- [**Table of Contents**](#table-of-contents)
-- [**How to Use**](#how-to-use)
-  - [**Prerequisites**](#prerequisites)
-  - [**Environment Variables**](#environment-variables)
-  - [**Running the Application**](#running-the-application)
-    - [**Local Development**](#local-development)
-    - [**Docker Deployment**](#docker-deployment)
+- [*Facial Emotion Recognition Computer Vision FLASK API*](#facial-emotion-recognition-computer-vision-flask-api)
+  - [**Table of Contents**](#table-of-contents)
+  - [**How to Use**](#how-to-use)
+    - [**Prerequisites**](#prerequisites)
+    - [**Environment Variables**](#environment-variables)
+    - [**Running the Application**](#running-the-application)
+      - [**Local Development**](#local-development)
+      - [**Docker Deployment**](#docker-deployment)
 ## **How to Use**
 Instruction for setting up and running the REST API server.
 
