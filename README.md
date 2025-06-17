@@ -1,5 +1,9 @@
 # *Facial Emotion Recognition Computer Vision FLASK API*
 
+This Flask-based API application serves as an end-to-end deployment example of a machine learning model designed for real-world emotion recognition tasks. The API accepts images in various formats, processes them, and returns the predicted emotional state along with a corresponding confidence score.
+
+The project illustrates how to transition a trained deep learning model from development to production, highlighting best practices in software engineering, DevOps, and MLOps. It demonstrates the importance of scalable, maintainable, and robust API design in the deployment of AI solutions, making it suitable for integration into healthcare, customer service, or any emotion-aware application environment.
+
 ## **Table of Contents**
 - [*Facial Emotion Recognition Computer Vision FLASK API*](#facial-emotion-recognition-computer-vision-flask-api)
   - [**Table of Contents**](#table-of-contents)
@@ -32,7 +36,7 @@ PORT=8080
 1. Create the .env file as described above
 2. Create a python virtual environment according to your preference
 ````python
-python3 -m virtualenv .env
+python3 -m virtualenv .myenv
 source .env/bin/activate
 ````
 3. Install the dependencies of the application:
