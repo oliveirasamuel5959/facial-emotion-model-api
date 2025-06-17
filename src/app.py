@@ -16,6 +16,10 @@ app = Flask(__name__)
 data_pred = {}
 data_list = []
 
+@app.route('/')
+def home():
+    return "<h1>Hello from Docker</h1>"
+
 @app.route('/default/predict', methods=['GET'])
 def get_default_predict():
     return jsonify(data_list)
