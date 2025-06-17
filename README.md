@@ -65,6 +65,8 @@ docker-compose up --build -d
 docker ps
 ````
 > [!NOTE]  
-> Read the contribution guideline before adding a pull request.
-> 
-3. Open the browser in http://127.0.0.1:8080
+> Verify that the containers was created and is up and running.
+
+1. Open the browser in http://127.0.0.1:8080
+> [!NOTE]  
+> Verify common firewall rules and commands to allow the server running on the specified port.
