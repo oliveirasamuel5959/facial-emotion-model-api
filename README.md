@@ -1,7 +1,11 @@
-## **Facial Emotion Recognition Flask API**
-
 ## **Table of Contents**
-
+- [**Table of Contents**](#table-of-contents)
+- [**How to Use**](#how-to-use)
+  - [**Prerequisites**](#prerequisites)
+  - [**Environment Variables**](#environment-variables)
+  - [**Running the Application**](#running-the-application)
+    - [**Local Development**](#local-development)
+    - [**Docker Deployment**](#docker-deployment)
 ## **How to Use**
 Instruction for setting up and running the REST API server.
 
@@ -20,7 +24,8 @@ PORT=8080
 ````
 
 ### **Running the Application**
-#### Local Development
+
+#### **Local Development**
 1. Create the .env file as described above
 2. Create a python virtual environment according to your preference
 ````python
@@ -35,3 +40,15 @@ pip install -r requirements.txt
 ````python
 gunicorn --bind 0.0.0.0:8080 src.app:app
 ````
+5. Open the browser in http://127.0.0.1:8080
+
+#### **Docker Deployment**
+1. Build the containers using docker-compose.yaml
+````python
+docker-compose up --build -d
+````
+2. Check images running and ports
+````python
+docker ps
+````
+3. Open the browser in http://127.0.0.1:8080
