@@ -1,20 +1,19 @@
 version: "3.9"
 services:
-  api:
+  fer-api:
     build: .
-    image: fer-app:v1.3
+    image: fer-api:v1.4
     volumes:
     - .:/app
-    expose:
-      - "8080"
     restart: always
 
-  nginx-proxy:
-    image: nginx
-    volumes:
-    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
     ports:
-    - "80:80"
+      - 80:80
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
     depends_on:
-      - api
-    restart: always
+      - fer-api
