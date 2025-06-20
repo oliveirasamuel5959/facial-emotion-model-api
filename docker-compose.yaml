@@ -3,9 +3,19 @@ services:
   model-service:
     build:
       context: ./model_service
-    image: model-service:v1.4
+    image: model-service:v1.0
+    ports:
+      - 5000:5000
     volumes:
-    - .:/app
+    - ./model_service:/app
+    restart: on-failure
+
+  app:
+    build:
+      context: ./app
+    image: main-app:v1.0
+    ports:
+      - 5001:5001
     restart: always
 
   nginx:
@@ -17,4 +27,5 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     restart: unless-stopped
     depends_on:
+      - app
       - model-service
