@@ -4,8 +4,8 @@ services:
     build:
       context: ./model_service
     image: model-service:v1.0
-    ports:
-      - 5000:5000
+    expose:
+      - "8501"
     volumes:
     - ./model_service:/app
     restart: on-failure
@@ -14,8 +14,8 @@ services:
     build:
       context: ./app
     image: main-app:v1.0
-    ports:
-      - 5001:5001
+    expose:
+      - "5000"
     restart: always
 
   nginx:

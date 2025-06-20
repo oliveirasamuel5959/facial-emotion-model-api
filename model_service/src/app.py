@@ -16,9 +16,9 @@ app = Flask(__name__)
 data_pred = {}
 data_list = []
 
-@app.route('/')
+@app.route('/api/')
 def home():
-    return "<h1>Hello from Docker</h1>"
+    return "<h1>Hello from API</h1>"
 
 @app.route('/default/predict', methods=['GET'])
 def get_default_predict():
