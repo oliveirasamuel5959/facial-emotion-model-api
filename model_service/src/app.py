@@ -16,7 +16,7 @@ app = Flask(__name__)
 data_pred = {}
 data_list = []
 
-@app.route('/api/')
+@app.route('/')
 def home():
     return "<h1>Hello from API</h1>"
 
