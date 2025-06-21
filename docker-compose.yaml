@@ -3,9 +3,12 @@ services:
   model-service:
     build:
       context: ./model_service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
     image: model-service:v1.0
-    expose:
-      - "8501"
+    networks:
+      - webnet
     volumes:
     - ./model_service:/app
     restart: on-failure
@@ -13,9 +16,12 @@ services:
   app:
     build:
       context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
     image: main-app:v1.0
-    expose:
-      - "5000"
+    networks:
+      - webnet
     restart: always
 
   nginx:
@@ -25,7 +31,13 @@ services:
       - 80:80
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - webnet
     restart: unless-stopped
     depends_on:
       - app
       - model-service
+
+networks:
+  webnet:
+
