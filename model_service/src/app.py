@@ -23,21 +23,18 @@ def home():
 @app.route('/v1/predictions/<string:name>', methods=['GET'])
 def get_predict(name):
     try:        
-        if data_pred['name'] == name:
-            return jsonify(data_pred)
-        else:
-            return jsonify(message={"message": "Name not found"})
-    except Exception:
-        return jsonify(message={"IndexError"})
+        return jsonify(data_pred)
+    except Exception as e:
+        return jsonify(message={f"{e}"})
 
 @app.route('/v1/predictions', methods=['POST'])
 def predict():
     if request.method == 'POST':
         data = request.get_json()
-        image = image64_decode(data)
-        image_array = image_preprocessing(image)
-        face_image_array, pos, dim = face_detect(image_array=image_array)
-        pred, acc = emd.predict(image_array=face_image_array, model=model)
+        image_array = image64_decode(data)
+        face_image_array, pos, dim = face_detect(image_array)
+        image_array_for_model  = image_preprocessing(face_image_array)
+        pred, acc = emd.predict(image_array=image_array_for_model, model=model)
 
         image_props["position"] = pos
         image_props["dimension"] = dim
