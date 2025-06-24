@@ -3,8 +3,6 @@ from tensorflow import keras
 import numpy as np
 import logging
 
-from src.utils import crop_face, image_preprocessing, face_detec
-
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class EmotionDetection:

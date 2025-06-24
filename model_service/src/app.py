@@ -3,7 +3,7 @@ from flask import jsonify
 from flask import request
 
 from src.ml_classifier import EmotionDetection
-from src.utils import face_detec, image_preprocessing, image64_decode
+from src.utils import face_detect, image_preprocessing, image64_decode
 
 # Machine Learning Model class
 CLASS_NAMES = ['angry', 'fear', 'happy', 'neutral', 'sad'] 
@@ -14,60 +14,40 @@ model = emd.load(path='model/model-26-0.7175.h5')
 app = Flask(__name__)
 
 data_pred = {}
-data_list = []
+image_props = {}
 
 @app.route('/')
 def home():
     return "<h1>Hello from API</h1>"
 
-@app.route('/default/predict', methods=['GET'])
-def get_default_predict():
-    return jsonify(data_list)
-
 @app.route('/v1/predictions/<string:name>', methods=['GET'])
 def get_predict(name):
     try:        
-        if data_list[0]['author'] == name:
-            return jsonify(data_list)
+        if data_pred['name'] == name:
+            return jsonify(data_pred)
         else:
             return jsonify(message={"message": "Name not found"})
-    except IndexError:
-        return jsonify(message={"message": "IndexError"})
-
-@app.route('/test/predict', methods=['POST'])
-def test_predict():
-    if request.method == 'POST':
-        data = request.get_json()
-        if data['image'] == 'default':
-            face_image = face_detec(image_path='images/me.jpeg')
-            image_array = image_preprocessing(face_image)
-            pred, acc = emd.predict(image_array=image_array, model=model)
-            
-            data_pred["prediction"] = pred
-            data_pred["accuracy"] = acc
-            data_list.append(data_pred)
-            
-            return jsonify({'message': 'Data received', 'image': data['image']}), 201
-    else:
-        return jsonify({"message": "Data missing"})
-    
+    except Exception:
+        return jsonify(message={"IndexError"})
 
 @app.route('/v1/predictions', methods=['POST'])
 def predict():
     if request.method == 'POST':
         data = request.get_json()
-        print(data['images'][0]['name'])
         image = image64_decode(data)
-        face_image = face_detec(image_array=image)
-        image_array = image_preprocessing(face_image)
-        pred, acc = emd.predict(image_array=image_array, model=model)
-            
+        image_array = image_preprocessing(image)
+        face_image_array, pos, dim = face_detect(image_array=image_array)
+        pred, acc = emd.predict(image_array=face_image_array, model=model)
+
+        image_props["position"] = pos
+        image_props["dimension"] = dim
+        
         data_pred["prediction"] = pred
         data_pred["accuracy"] = acc
-        data_pred["author"] = data['images'][0]['author']
-        data_list.append(data_pred)
+        data_pred["name"] = data['image']['name']
+        data_pred["image-props"] = image_props
         
-        return jsonify({'message': 'Data received', 'image': data['images'][0]['name']}), 201
+        return jsonify({'message': 'Data received', 'image': data['image']['name']}), 201
     else:
         return jsonify({"message": "Data missing"})
     
