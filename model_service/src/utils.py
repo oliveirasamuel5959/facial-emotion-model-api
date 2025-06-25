@@ -20,7 +20,7 @@ def face_detect(image_array):
     gray_image = cv2.cvtColor(image_array, cv2.COLOR_BGR2GRAY)
     gray_image = gray_image.astype('uint8')
     detect = cv2.CascadeClassifier('model/haarcascade_frontalface_default.xml')
-    faces = detect.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(20, 20), flags=cv2.CASCADE_SCALE_IMAGE)
+    faces = detect.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
     
     if len(faces) == 0:
         logging.info(f"face not found for image {gray_image.shape}.")

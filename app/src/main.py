@@ -1,17 +1,13 @@
 import streamlit as st
 from PIL import Image
+from PIL import ImageOps
 import numpy as np
 
-import cv2
-
-import requests
-import json
 import logging
 
 from utils import image64_encode
 from utils import send_image_api
 from utils import get_predictions
-from utils import get_face_position
 from utils import get_face_rect
 
 st.title('Facial Emotion Recognition')
@@ -26,8 +22,12 @@ st.write('Name:', user_name)
 uploaded_image = st.file_uploader("Choose an image file", type=["jpg", "jpeg", "png"])
 
 if uploaded_image:
-    image = Image.open(uploaded_image).convert('RGB')
-    image_array = np.array(image)
+    image = Image.open(uploaded_image) # read input image
+    image = ImageOps.exif_transpose(image) # uprights rotated image
+    
+    image_array = np.array(image) # convert to numpy array to be processed
+    
+    st.image(image_array, caption="Input image", use_container_width=True) # show image
     
     data = image64_encode(image, user_name)
     print(data['image']['content'][0:20])

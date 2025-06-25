@@ -83,7 +83,7 @@ def get_face_rect(data, image_array):
             f"{class_and_position[i][0]}", 
             (x + 30, y + height + 30), 
             cv2.FONT_HERSHEY_SIMPLEX,
-            1,
+            2,
             (0, 255, 0),
             2,
             cv2.LINE_AA
