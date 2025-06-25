@@ -30,19 +30,22 @@ def get_predict(name):
 @app.route('/v1/predictions', methods=['POST'])
 def predict():
     if request.method == 'POST':
+        data_pred.clear()
         data = request.get_json()
         image_array = image64_decode(data)
-        face_image_array, pos, dim = face_detect(image_array)
+        face_image_array, num_of_faces, faces_positions = face_detect(image_array)
         image_array_for_model  = image_preprocessing(face_image_array)
-        pred, acc = emd.predict(image_array=image_array_for_model, model=model)
+        pred_list, acc_list = emd.predict(image_array_list=image_array_for_model, model=model)
 
-        image_props["position"] = pos
-        image_props["dimension"] = dim
+        image_props["num_of_faces"] = num_of_faces
+        image_props["faces_positions"] = faces_positions
         
-        data_pred["prediction"] = pred
-        data_pred["accuracy"] = acc
+        data_pred["prediction"] = pred_list
+        data_pred["accuracy"] = acc_list
         data_pred["name"] = data['image']['name']
         data_pred["image-props"] = image_props
+        
+        print(data_pred)
         
         return jsonify({'message': 'Data received', 'image': data['image']['name']}), 201
     else:

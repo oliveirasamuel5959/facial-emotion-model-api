@@ -15,38 +15,49 @@ def crop_face(frame, pos, dim):
     return faces
 
 def face_detect(image_array):
-    # image_array = cv2.resize(image_array, (367, 367))
+    faces_array = []
     logging.info(f"Start face detection. Image shape is {image_array.shape}.")
     gray_image = cv2.cvtColor(image_array, cv2.COLOR_BGR2GRAY)
     gray_image = gray_image.astype('uint8')
     detect = cv2.CascadeClassifier('model/haarcascade_frontalface_default.xml')
-    face = detect.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
+    faces = detect.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(20, 20), flags=cv2.CASCADE_SCALE_IMAGE)
     
-    if face is None:
+    if len(faces) == 0:
         logging.info(f"face not found for image {gray_image.shape}.")
     else:
-        for (x, y, w, h) in face:
+        logging.info(f"face(s) positions and dimensions {faces}.")
+        logging.info(f"faces(s) return shape {faces.shape}.")
+        
+        num_faces = faces.shape[0]
+        
+        for (x, y, w, h) in faces:
             pos = (int(x), int(y))
             dim = (int(w), int(h))
             
             cv2.rectangle(image_array, (x, y), (x + w, y + h), (0, 255, 0), 3)
-            face = crop_face(image_array, pos=pos, dim=dim)
+            face_image = crop_face(image_array, pos=pos, dim=dim)
+            
+            faces_array.append(face_image)
             
         cv2.imwrite("images/face_image.png", image_array)
         
-        logging.info(f"Completed face detection. Face shape {face.shape} and found {len(face)} face(s).")    
-        return face, pos, dim
-    
-    
+        logging.info(f"Completed face detection. Face shape {faces} and found {num_faces} face(s).")    
+        return faces_array, num_faces, faces.tolist()
+        
 def image_preprocessing(face_image):
+    image_list = []
     try:
         logging.info("Start image preprocessing...")
-        image = cv2.resize(face_image, (224, 224))
-        image = tf.keras.preprocessing.image.img_to_array(image)
-        image = np.expand_dims(image, axis=0)
-        image = image / 255.0  # Normalize
-        logging.info(f"Completed image preprocessing. Image shape is {image.shape}.")    
-        return image
+        for i in range(len(face_image)):
+            logging.info(f"Start image preprocessing for face {i + 1}")
+            image = cv2.resize(face_image[i], (224, 224))
+            image = tf.keras.preprocessing.image.img_to_array(image)
+            image = np.expand_dims(image, axis=0)
+            image = image / 255.0  # Normalize
+            logging.info(f"Completed image preprocessing for face {i + 1}. Image shape is {image.shape}.")    
+            image_list.append(image)
+        logging.info(f"Completed image preprocessing for {len(face_image)} images.")
+        return image_list
     except Exception as e:
         logging.error("Invalid image data.")
         logging.exception(e)
