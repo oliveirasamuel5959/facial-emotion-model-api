@@ -26,7 +26,6 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx-container
     ports:
       - 80:80
     volumes:
@@ -37,6 +36,16 @@ services:
     depends_on:
       - app
       - model-service
+
+  cloudflare:
+    container_name: cloudflaretunnel
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    environment:
+      - TUNNEL_TOKEN=${TUNNEL_TOKEN}
+    command: tunnel --no-autoupdate run
+    networks:
+      - webnet
 
 networks:
   webnet:

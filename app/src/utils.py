@@ -10,7 +10,7 @@ import cv2
 
 logger = logging.getLogger(__name__)
 
-URL = 'http://emovio.com.br/api/v1/predictions'
+URL = 'http://ai.emovio.com.br/api/v1/predictions'
 headers = {'content-type': 'application/json'}
 
 def image64_encode(base_image, name):
@@ -43,7 +43,7 @@ def send_image_api(data_json):
     return response    
     
 def get_predictions(name):
-    response = requests.get(url=f'http://emovio.com.br/api/v1/predictions/{name}', headers=headers)
+    response = requests.get(url=f'http://ai.emovio.com.br/api/v1/predictions/{name}', headers=headers)
     return response
 
 def get_face_position(data):
