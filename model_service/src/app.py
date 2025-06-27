@@ -49,12 +49,12 @@ async def predict(req: Request):
         
         data_pred["prediction"] = pred_list
         data_pred["accuracy"] = acc_list
-        data_pred["name"] = data['image']['author']
+        data_pred["name"] = data['image']['name']
         data_pred["image-props"] = image_props
         
         print(data_pred)
         
-        return JSONResponse({'message': 'Data received', 'image': data['image']['author']}), 201
+        return JSONResponse({'message': 'Data received', 'image': data['image']['name']}), 201
     else:
         return JSONResponse({"message": "Data missing"})
     

@@ -10,7 +10,7 @@ import cv2
 
 logger = logging.getLogger(__name__)
 
-URL = 'http://ai.emovio.com.br/api/v1/predictions'
+URL = 'https://ai.emovio.com.br/api/v1/predictions'
 headers = {'content-type': 'application/json'}
 
 def image64_encode(base_image, name):
@@ -43,7 +43,7 @@ def send_image_api(data_json):
     return response    
     
 def get_predictions(name):
-    response = requests.get(url=f'http://ai.emovio.com.br/api/v1/predictions/{name}', headers=headers)
+    response = requests.get(url=f'https://ai.emovio.com.br/api/v1/predictions/{name}', headers=headers)
     return response
 
 def get_face_position(data):
@@ -72,21 +72,21 @@ def get_face_rect(data, image_array):
         
         image_array = cv2.rectangle(
             image_array, 
-            (class_and_position[i][1][0], class_and_position[i][1][1]), 
-            (x + width, y + height), 
-            (0, 255, 0), 
-            2
+            pt1=(class_and_position[i][1][0], class_and_position[i][1][1]), 
+            pt2=(x + width, y + height), 
+            color=(0, 255, 0), 
+            thickness=3
         )
         
         image_array = cv2.putText(
-            image_array, 
-            f"{class_and_position[i][0]}", 
-            (x + 30, y + height + 30), 
-            cv2.FONT_HERSHEY_SIMPLEX,
-            2,
-            (0, 255, 0),
-            2,
-            cv2.LINE_AA
+            img=image_array, 
+            text=f"{class_and_position[i][0]}", 
+            org=(x + 5, y + height + 50), 
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=2.0,
+            color=(0, 255, 0),
+            thickness=3,
+            lineType=cv2.LINE_AA
         )
         
     st.image(image_array, caption="Processed Image", use_container_width=True)

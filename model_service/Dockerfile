@@ -11,6 +11,9 @@ RUN apt-get update -y && \
         libglib2.0-0 && \
         pip install --no-cache-dir -r requirements.txt     
 
+# Ensure pip-installed CLI tools like `uvicorn` are accessible
+ENV PATH="/root/.local/bin:$PATH"
+
 COPY . .
 
 EXPOSE 8080
