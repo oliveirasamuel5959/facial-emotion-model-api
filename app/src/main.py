@@ -10,6 +10,10 @@ from utils import send_image_api
 from utils import get_predictions
 from utils import get_face_rect
 
+st.set_page_config(
+    page_title="Tech Science"
+)
+
 st.title('Facial Emotion Recognition')
 
 st.text('emotion detection using deep learning')
