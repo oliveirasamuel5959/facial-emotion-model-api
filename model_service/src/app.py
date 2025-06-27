@@ -1,6 +1,11 @@
-from flask import Flask
-from flask import jsonify
-from flask import request
+# from flask import Flask
+# from flask import jsonify
+# from flask import request
+
+import uvicorn
+from fastapi import FastAPI
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
 from src.ml_classifier import EmotionDetection
 from src.utils import face_detect, image_preprocessing, image64_decode
@@ -11,27 +16,29 @@ CLASS_NAMES = ['angry', 'fear', 'happy', 'neutral', 'sad']
 emd = EmotionDetection(CLASS_NAMES)
 model = emd.load(path='model/model-26-0.7175.h5')
 
-app = Flask(__name__)
+# app = Flask(__name__)
+app = FastAPI()
 
 data_pred = {}
 image_props = {}
 
-@app.route('/')
-def home():
+@app.get('/')
+async def home(request: Request):
     return "<h1>Hello from API</h1>"
 
-@app.route('/v1/predictions/<string:name>', methods=['GET'])
-def get_predict(name):
+@app.get('/v1/predictions/{name}')
+async def get_predict(name, request: Request):
     try:        
-        return jsonify(data_pred)
+        return JSONResponse(data_pred)
     except Exception as e:
-        return jsonify(message={f"{e}"})
+        return JSONResponse(message={f"{e}"})
 
-@app.route('/v1/predictions', methods=['POST'])
-def predict():
-    if request.method == 'POST':
+@app.post('/v1/predictions')
+async def predict(req: Request):
+    if req.method == 'POST':
         data_pred.clear()
-        data = request.get_json()
+        data = await req.json()
+        print(data['image']['content'][0:20])
         image_array = image64_decode(data)
         face_image_array, num_of_faces, faces_positions = face_detect(image_array)
         image_array_for_model  = image_preprocessing(face_image_array)
@@ -42,14 +49,14 @@ def predict():
         
         data_pred["prediction"] = pred_list
         data_pred["accuracy"] = acc_list
-        data_pred["name"] = data['image']['name']
+        data_pred["name"] = data['image']['author']
         data_pred["image-props"] = image_props
         
         print(data_pred)
         
-        return jsonify({'message': 'Data received', 'image': data['image']['name']}), 201
+        return JSONResponse({'message': 'Data received', 'image': data['image']['author']}), 201
     else:
-        return jsonify({"message": "Data missing"})
+        return JSONResponse({"message": "Data missing"})
     
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    uvicorn.run("app:app", host='0.0.0.0', port=8080, reload=True)
