@@ -10,6 +10,8 @@ from io import BytesIO
 import logging
 logging.basicConfig(filename='./model_service.log', filemode='w', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+detect = cv2.CascadeClassifier('model/haarcascade_frontalface_default.xml')
+
 def crop_face(frame, pos, dim):
     faces = frame[pos[1]:pos[1] + dim[1], pos[0]: pos[0] + dim[0]]
     return faces
@@ -19,7 +21,6 @@ def face_detect(image_array):
     logging.info(f"Start face detection. Image shape is {image_array.shape}.")
     gray_image = cv2.cvtColor(image_array, cv2.COLOR_BGR2GRAY)
     gray_image = gray_image.astype('uint8')
-    detect = cv2.CascadeClassifier('model/haarcascade_frontalface_default.xml')
     faces = detect.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(30, 30), flags=cv2.CASCADE_SCALE_IMAGE)
     
     if len(faces) == 0:
