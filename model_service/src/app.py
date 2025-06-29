@@ -6,6 +6,7 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.requests import Request
 from starlette.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.ml_classifier import EmotionDetection
 from src.utils import face_detect, image_preprocessing, image64_decode
@@ -18,6 +19,14 @@ model = emd.load(path='model/model-26-0.7175.h5')
 
 # app = Flask(__name__)
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 data_pred = {}
 image_props = {}
@@ -33,6 +42,16 @@ async def get_predict(name, request: Request):
     except Exception as e:
         return JSONResponse(message={f"{e}"})
 
+@app.post('/v1/login')
+async def login(req: Request):
+    if req.method == 'POST':
+        data = await req.json()
+        print(data)
+        
+        return JSONResponse({'message': 'Data received', 'data': data}), 201
+    else:
+        return JSONResponse({"message": "Error post request"})
+    
 @app.post('/v1/predictions')
 async def predict(req: Request):
     if req.method == 'POST':
