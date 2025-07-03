@@ -62,7 +62,51 @@ def image_preprocessing(face_image):
     except Exception as e:
         logging.error("Invalid image data.")
         logging.exception(e)
+        
+def draw_rectangle(image_array, num_faces, face_pos, pred_list, acc_list):
+    for i in range(num_faces):
+        x = face_pos[i][0]
+        y = face_pos[i][1]
+        width = face_pos[i][2]
+        height = face_pos[i][3]
+        
+        image_array = cv2.rectangle(
+            image_array, 
+            pt1=(x, y), 
+            pt2=(x + width, y + height), 
+            color=(0, 255, 0), 
+            thickness=3
+        )
+        
+        image_array = cv2.putText(
+            img=image_array, 
+            text=f"{pred_list[i]}", 
+            org=(x + 5, y + height + 50), 
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=2.0,
+            color=(0, 255, 0),
+            thickness=3,
+            lineType=cv2.LINE_AA
+        )
     
+    return image_array
+
+
+def image64_encode(image_array):
+    try:
+        image = Image.fromarray(image_array)
+        
+        buffered = BytesIO()
+        image.save(buffered, format='PNG')
+        
+        image_bytes = buffered.getvalue()
+        base64_bytes = base64.b64encode(image_bytes)
+        base64_encoded = base64_bytes.decode()
+        
+        return base64_encoded
+    except Exception as e:
+        print("Error: ", e)
+
 
 def image64_decode(image_post_data):
     logging.info("Start image decoding from base64 to PIL ndarray")
