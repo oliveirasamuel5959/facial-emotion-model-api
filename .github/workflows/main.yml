@@ -1,0 +1,21 @@
+name: Computer vision application
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Get source code"
+    - run: echo "Execute docker build"
+    - run: echo "push image to docker hub"
+
+  CD:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Get source code"
+    - run: echo "Docker-compose config"
+    - run: echo "Finish"
