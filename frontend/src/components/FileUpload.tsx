@@ -26,7 +26,6 @@ const FileUpload = () => {
     const [tryAgain, setTryAgain] = useState(false);
 
     const PORT_URL = 'https://ai.emovio.com.br/api/v1/predictions/from/image';
-    // const GET_URL = 'https://ai.emovio.com.br/api/v1/predictions/Samuel';
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -54,74 +53,69 @@ const FileUpload = () => {
     const handlePredict = (event: React.FormEvent) => {
         event?.preventDefault();
         
-        try {
-                if (!fileLoaded) {
-                    setErrMsg('Nenhum arquivo carregado');
-                return;
-                }
-
-                const reader = new FileReader();
-
-                reader.onloadend = async() => {
-                    const base64String = reader.result as string;
-
-                    // Montar o objeto já com base64
-                    const base_data: BaseImageData = {
-                        image: {
-                            name: fileName,
-                            timestamp: Date.now(),
-                            content: base64String.split(',')[1],
-                        },
-                        collection_name: 'Image base64 for Emotion Analysis',
-                    };
-
-                    setBase64Data(base64String);
-                    console.log('baseData', base_data);
-
-                    // Post Request to send image in base64 format
-                    try {
-                        setErrMsg('Start predict request...');
-                        const response = await axios.post(PORT_URL,
-                            JSON.stringify(base_data),
-                            {
-                                headers: { 'Content-Type': 'application/json' },
-                                withCredentials: false
-                            }
-                        );
-
-                        const parsedBody = JSON.parse(response.data[0].body)
-                        const imageSrc = `data:image/png;base64,${parsedBody.pred_image}`;
-
-                        console.log('post response data', parsedBody);
-
-                        if (response.status === 200) {
-                            console.log('Success: ', response?.status);
-                            setErrMsg('Predict request successful');
-                            setimagePredPreview(imageSrc);
-                            setResponseSuccess(true);
-                        } else {
-                            console.log('Failed: ', response?.status);
-                            setErrMsg('Predict request failed');
-                            setResponseSuccess(true);
-                        }
-
-                    } catch (err) {
-                        const error = err as AxiosError;
-                        if (!error?.response) {
-                            setErrMsg('No Server Response');
-                        } else if (error.response?.status === 401) {
-                            setErrMsg('Unauthorized');
-                        } else {
-                            setErrMsg('Failed');
-                        }
-                    }
-
-                }
-                reader.readAsDataURL(fileLoaded);
-
-        } catch (err) {
-            setErrMsg('Erro ao processar a imagem');
+        if (!fileLoaded) {
+            setErrMsg('Nenhum arquivo carregado');
+        return;
         }
+
+        const reader = new FileReader();
+
+        reader.onloadend = async() => {
+            const base64String = reader.result as string;
+
+            // Montar o objeto já com base64
+            const base_data: BaseImageData = {
+                image: {
+                    name: fileName,
+                    timestamp: Date.now(),
+                    content: base64String.split(',')[1],
+                },
+                collection_name: 'Image base64 for Emotion Analysis',
+            };
+
+            setBase64Data(base64String);
+            console.log('baseData', base_data);
+
+            // Post Request to send image in base64 format
+            try {
+                setErrMsg('Start predict request...');
+                const response = await axios.post(PORT_URL,
+                    JSON.stringify(base_data),
+                    {
+                        headers: { 'Content-Type': 'application/json' },
+                        withCredentials: false
+                    }
+                );
+
+                const parsedBody = JSON.parse(response.data[0].body)
+                const imageSrc = `data:image/png;base64,${parsedBody.pred_image}`;
+
+                console.log('post response data', parsedBody);
+
+                if (response.status === 200) {
+                    console.log('Success: ', response?.status);
+                    setErrMsg('Predict request successful');
+                    setimagePredPreview(imageSrc);
+                    setResponseSuccess(true);
+                } else {
+                    console.log('Failed: ', response?.status);
+                    setErrMsg('Predict request failed');
+                    setResponseSuccess(true);
+                }
+
+            } catch (err) {
+                const error = err as AxiosError;
+                if (!error?.response) {
+                    setErrMsg('No Server Response');
+                } else if (error.response?.status === 401) {
+                    setErrMsg('Unauthorized');
+                } else {
+                    setErrMsg('Failed');
+                }
+            }
+
+        }
+        reader.readAsDataURL(fileLoaded);
     }
 
     const handleTryAgain = (event: React.FormEvent) => {
