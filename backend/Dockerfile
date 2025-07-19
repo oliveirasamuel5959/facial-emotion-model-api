@@ -2,6 +2,8 @@ FROM python:3.10-slim-bookworm
 
 WORKDIR /app
 
+COPY .env /app/.env
+
 # Copy first to cache 
 COPY requirements.txt .
 

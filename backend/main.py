@@ -10,7 +10,7 @@ import cv2
 import time
 from dotenv import load_dotenv
 
-load_dotenv(override=True)
+load_dotenv()
 
 from utils.ml_classifier import EmotionDetection
 
@@ -174,6 +174,9 @@ async def login(req: Request):
         admin_user = os.getenv('ADMIN_USER')
         admin_password = os.getenv('ADMIN_PASSWORD')
         data = await req.json()
+        print('data: ', data)
+        print('user: ', admin_user)
+        print('password', admin_password)
         if admin_user == data['name'] and admin_password == data['password']:
             return JSONResponse({'message': 'correct credentials', 'success': True})
         else:
@@ -182,7 +185,7 @@ async def login(req: Request):
         return JSONResponse({"message": "Failed"})
     
 
-@app.post('/v1/predictions/from/image')
+@app.post('/api//v1/predictions/from/image')
 async def predict_image(req: Request):
     if req.method == 'POST':
         data_pred.clear()
