@@ -25,7 +25,7 @@ const FileUpload = () => {
 
     const [tryAgain, setTryAgain] = useState(false);
 
-    const PORT_URL = 'https://ai.emovio.com.br/api/v1/predictions/from/image';
+    const POST_URL = 'https://ai.emovio.com.br/api/v1/predictions/from/image';
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -79,7 +79,7 @@ const FileUpload = () => {
             // Post Request to send image in base64 format
             try {
                 setErrMsg('Start predict request...');
-                const response = await axios.post(PORT_URL,
+                const response = await axios.post(POST_URL,
                     JSON.stringify(base_data),
                     {
                         headers: { 'Content-Type': 'application/json' },

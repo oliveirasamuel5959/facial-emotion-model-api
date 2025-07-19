@@ -25,12 +25,12 @@ app = FastAPI()
 origins = [
     "http://localhost:3000",
     "http://localhost:8080",
-    "http://www.ai.emovio.com.br"
+    "https://ai.emovio.com.br"
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
@@ -157,18 +157,18 @@ def gen_frames():
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
 
-@app.get("/video_feed")
+@app.get("/v1/video_feed")
 async def video_feed():
     return StreamingResponse(gen_frames(), media_type="multipart/x-mixed-replace; boundary=frame")
 
-@app.get("/users")
+@app.get("/v1/users")
 async def get_users(req: Request):
     try:
         return JSONResponse({'username': os.getenv('ADMIN_USER')})   
     except Exception as e:
         return JSONResponse({"message": "Failed"})
 
-@app.post("/login")
+@app.post("/v1/login")
 async def login(req: Request):
     if req.method == 'POST':
         admin_user = os.getenv('ADMIN_USER')
@@ -199,20 +199,6 @@ async def predict_image(req: Request):
         return JSONResponse(content={"pred_image": image_base64}), 201
     else:
         return JSONResponse({"pred_image": "Error"})
-
-# @app.get("/")
-# async def index():
-#     return HTMLResponse("""
-#     <html>
-#         <head>
-#             <title>Emotion Stream</title>
-#         </head>
-#         <body>
-#             <h1>Live Camera Emotion Detection</h1>
-#             <img src="/video_feed" width="800" />
-#         </body>
-#     </html>
-#     """)
     
 if __name__ == "__main__":
     uvicorn.run(app, host='0.0.0.0', port=8080, reload=True)

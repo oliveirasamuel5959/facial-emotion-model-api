@@ -21,7 +21,7 @@ const Login = () => {
 
     const navigate = useNavigate();
 
-    const url = 'http://localhost:5000/login';
+    const POST_URL = 'https://ai.emovio.com.br/api/v1/login';
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -36,7 +36,7 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post(url, 
+            const response = await axios.post(POST_URL, 
                 JSON.stringify(userData),
                 {
                     headers: { 'Content-Type': 'application/json' },
