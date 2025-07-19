@@ -22,7 +22,7 @@ const FileUpload = () => {
     const [imagePredPreview, setimagePredPreview] = useState<string | null>(null);
     const [base64Data, setBase64Data] = useState<string | null>(null);
     const [responseSuccess, setResponseSuccess] = useState(false);
-    const [getResponseSuccess, setGetResponseSuccess] = useState(false);
+
     const [tryAgain, setTryAgain] = useState(false);
 
     const PORT_URL = 'https://ai.emovio.com.br/api/v1/predictions/from/image';
@@ -115,16 +115,6 @@ const FileUpload = () => {
                             setErrMsg('Failed');
                         }
                     }
-
-                    // Get request for prediction response
-                    // try {
-                    //     const response =  await axios.get(GET_URL);
-                    //     setGetResponseSuccess(true);
-                    //     console.log("Get response: " + JSON.stringify(response?.data));
-                    // } catch(err) {
-                    //     const error = err as AxiosError;
-                    //     console.log("Get Response Error: " + err)
-                    // }
 
                 }
                 reader.readAsDataURL(fileLoaded);
