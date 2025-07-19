@@ -13,17 +13,6 @@ services:
     - ./backend:/app
     restart: on-failure
 
-  # app:
-  #   build:
-  #     context: ./code
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "8501:8501"
-  #   image: main-app:v1.0
-  #   networks:
-  #     - webnet
-  #   restart: always
-
   web:
     build:
       context: ./frontend
