@@ -22,7 +22,8 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         # docker build -t .
-        context: frontend/Dockerfile
+        context: frontend
+        file: frontend/Dockerfile
         push: true
         tags: samueloliveira12/facial-emotion-app:${{ github.run_number }}
 
