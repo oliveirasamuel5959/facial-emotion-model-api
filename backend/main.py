@@ -25,8 +25,7 @@ app = FastAPI()
 origins = [
     "http://localhost:3000",
     "http://localhost:8080",
-    "https://example.com",
-    "https://www.example.com",
+    "https://ai.emovio.com.br"
 ]
 
 app.add_middleware(
