@@ -14,12 +14,6 @@ RUN apt-get update && apt-get install -y curl pipx && \
         libglib2.0-0 && \
     uv pip install --system --no-cache-dir -r requirements.txt
 
-# RUN apt-get install -y --no-install-recommends \
-#       libgl1 \
-#       libglib2.0-0
-
-# RUN uv pip install --system --no-cache-dir -r requirements.txt
-
 EXPOSE 8501
 
 COPY . .

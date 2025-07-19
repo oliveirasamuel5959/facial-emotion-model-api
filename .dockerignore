@@ -15,6 +15,11 @@ Dockerfile
 .docker
 .dockerignore
 
+# Node
+node_modules
+npm-debug.log
+.dockerignore
+
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
 **/*.py[cod]

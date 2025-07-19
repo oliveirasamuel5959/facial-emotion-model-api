@@ -24,7 +24,7 @@ packaging==25.0
 pandas==2.3.0
 pillow==11.2.1
 protobuf==6.31.1
-pyarrow==20.0.0
+# pyarrow==20.0.0
 pybase64==1.4.1
 pydeck==0.9.1
 pyparsing==3.2.3

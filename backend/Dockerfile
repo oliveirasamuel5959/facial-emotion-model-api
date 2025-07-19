@@ -1,11 +1,11 @@
-FROM python:3.10-slim-buster
+FROM python:3.10-slim-bookworm
 
 WORKDIR /app
 
 # Copy first to cache 
 COPY requirements.txt .
 
-RUN apt-get update -y && \ 
+RUN apt-get update -y && \
         apt-get install -y --no-install-recommends \
         libgl1 \
         libglib2.0-0 && \
@@ -18,4 +18,4 @@ COPY . .
 
 EXPOSE 8080
 
-CMD ["uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]

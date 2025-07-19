@@ -1,0 +1,74 @@
+.video_stream {
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    background-color: #f4f4f9;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.stream_content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 40px;
+}
+
+/* Optional: fix Navbar to top if needed */
+.navbar {
+    width: 100%;
+    position: sticky;
+    top: 0;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    z-index: 10;
+}
+
+.stream_content button {
+    background-color: #6054ff;
+    color: white;
+    padding: 12px 24px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stream_content button:hover {
+    background-color: #4b40cc;
+    transform: translateY(-2px);
+}
+
+.stream_content button:active {
+    transform: scale(0.98);
+}
+
+.stream_content img {
+    width: 640px;
+    height: 480px;
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.stream_content img:hover {
+    transform: scale(1.01);
+}
+
+@media (max-width: 768px) {
+    .stream_content img {
+        width: 100%;
+        height: auto;
+    }
+
+    .stream_content button {
+        width: 100%;
+        padding: 14px;
+        font-size: 1.1rem;
+    }
+}

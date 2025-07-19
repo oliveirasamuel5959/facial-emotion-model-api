@@ -2,7 +2,7 @@ version: "3.9"
 services:
   model-service:
     build:
-      context: ./model_service
+      context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
@@ -10,22 +10,39 @@ services:
     networks:
       - webnet
     volumes:
-    - ./model_service:/app
+    - ./backend:/app
     restart: on-failure
 
-  app:
+  # app:
+  #   build:
+  #     context: ./code
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "8501:8501"
+  #   image: main-app:v1.0
+  #   networks:
+  #     - webnet
+  #   restart: always
+
+  web:
     build:
-      context: ./app
+      context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "8501:8501"
-    image: main-app:v1.0
+      - "3000:3000"
+    image: webapp:v1.0
     networks:
       - webnet
-    restart: always
+    volumes:
+      - ./frontend:/frontend
+      - ./frontend/node_modules:/frontend/node_modules
+    env_file:
+      - .env
+    stdin_open: true
+    
 
   nginx:
-    image: nginx:latest
+    image: nginx:stable-alpine
     ports:
       - 80:80
     volumes:
@@ -34,7 +51,7 @@ services:
       - webnet
     restart: unless-stopped
     depends_on:
-      - app
+      - web
       - model-service
 
   cloudflare:
@@ -49,9 +66,4 @@ services:
 
 networks:
   webnet:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: "172.19.1.0/24"
-          gateway: "172.19.1.1"
 
