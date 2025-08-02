@@ -89,14 +89,15 @@ const FileUpload = () => {
                 );
 
                 const parsedBody = JSON.parse(response.data[0].body)
+
                 const imageSrc = `data:image/png;base64,${parsedBody.pred_image}`;
 
-                console.log('post response data', parsedBody);
+                console.log('post response data', parsedBody.output);
 
                 if (response.status === 200) {
                     console.log('Success: ', response?.status);
                     setErrMsg('Predict request successful');
-                    setModelOutput(parsedBody.output[0]);
+                    setModelOutput(parsedBody.output);
                     setImagePredPreview(imageSrc);
                     setResponseSuccess(true);
                 } else {

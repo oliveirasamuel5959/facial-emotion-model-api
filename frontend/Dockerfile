@@ -16,5 +16,7 @@ COPY . .
 # Expose the port your app runs on
 EXPOSE 3000
  
-# Define the command to run your app
+ENV NODE_ENV=development
+ENV CHOKIDAR_USEPOLLING=true
+
 CMD ["npm", "start"]

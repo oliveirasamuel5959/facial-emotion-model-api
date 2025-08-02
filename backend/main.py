@@ -1,4 +1,5 @@
 import os
+import logging
 import time
 
 import cv2
@@ -13,6 +14,7 @@ from pydantic import BaseModel
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+logger = logging.getLogger(__name__)
 load_dotenv()
 
 from utils.ml_classifier import EmotionDetection
@@ -258,11 +260,11 @@ async def predict_image(req: Request):
             prediction_time=end-start
         )
         
-        print("Pydantic Base Model Output: ", output)
+        logger.info(f"Pydantic Base Model Output: {output.json()}") 
         
         image_base64 = image64_encode(image_array=image_pred_array)
 
-        return JSONResponse(content={"pred_image": image_base64, "output": output.class_name}), 201
+        return JSONResponse(content={"pred_image": image_base64, "output": output.json()}), 201
     else:
         return JSONResponse({"pred_image": "Error"})
 
