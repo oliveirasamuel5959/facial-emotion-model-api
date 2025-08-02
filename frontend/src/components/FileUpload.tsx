@@ -19,7 +19,8 @@ const FileUpload = () => {
     const [fileName, setFileName] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [imagePreview, setImagePreview] = useState<string | null>(null);
-    const [imagePredPreview, setimagePredPreview] = useState<string | null>(null);
+    const [imagePredPreview, setImagePredPreview] = useState<string | null>(null);
+    const [modelOutput, setModelOutput] = useState<string | null>(null);
     const [base64Data, setBase64Data] = useState<string | null>(null);
     const [responseSuccess, setResponseSuccess] = useState(false);
 
@@ -95,7 +96,8 @@ const FileUpload = () => {
                 if (response.status === 200) {
                     console.log('Success: ', response?.status);
                     setErrMsg('Predict request successful');
-                    setimagePredPreview(imageSrc);
+                    setModelOutput(parsedBody.output[0]);
+                    setImagePredPreview(imageSrc);
                     setResponseSuccess(true);
                 } else {
                     console.log('Failed: ', response?.status);
@@ -122,7 +124,7 @@ const FileUpload = () => {
         event?.preventDefault();
         setTryAgain(true);
         setResponseSuccess(false);
-        setimagePredPreview(null);
+        setImagePredPreview(null);
         console.log('try again', tryAgain);
     }
 
@@ -147,8 +149,7 @@ const FileUpload = () => {
                                     />
                                 )
                             }
-
-                            <p>{fileName}</p>
+                            <p>{modelOutput}</p>
                             <div>
                                 { responseSuccess ? (
                                     <button className="secondary-button" onClick={handleTryAgain}>Try Again</button>

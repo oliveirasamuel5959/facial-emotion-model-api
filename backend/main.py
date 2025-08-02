@@ -3,6 +3,8 @@ import time
 
 import cv2
 import uvicorn
+import json
+
 from dotenv import load_dotenv
 from fastapi import BackgroundTasks, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,6 +16,8 @@ from starlette.responses import JSONResponse
 load_dotenv()
 
 from utils.ml_classifier import EmotionDetection
+from scripts.data_model import ImageDataInput, ImageDataOutput
+
 from utils.utils import (
     crop_face,
     draw_rectangle,
@@ -37,15 +41,6 @@ app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["*"],
 )
-
-
-class EmotionResult(BaseModel):
-    x: int
-    y: int
-    w: int
-    h: int
-    emotion: str
-
 
 remote = False
 
@@ -231,15 +226,21 @@ async def login(req: Request):
 async def predict_image(req: Request):
     if req.method == "POST":
         data_pred.clear()
-        data = await req.json()
-        print(data["image"]["content"][0:20])
-        image_array = image64_decode(data)
+        data_req = await req.json()
+        
+        print(data_req["image"]["content"][0:20])
+        # print("Data from pydantic: ", data)
+        
+        image_array = image64_decode(data_req)
         face_image_array, num_faces, face_pos = face_detect(image_array)
         image_array_for_model = image_preprocessing(face_image_array)
+        
+        start = time.time()
         pred_list, acc_list = emd.predict(
             image_array_list=image_array_for_model, model=model
         )
-
+        end = time.time()
+        
         image_pred_array = draw_rectangle(
             image_array=image_array,
             num_faces=num_faces,
@@ -247,9 +248,21 @@ async def predict_image(req: Request):
             pred_list=pred_list,
             acc_list=acc_list,
         )
+        
+        output = ImageDataOutput(
+            model_name="face-image-emotion-detection",
+            num_faces=num_faces,
+            face_pos=face_pos,
+            score=acc_list,
+            class_name=pred_list,
+            prediction_time=end-start
+        )
+        
+        print("Pydantic Base Model Output: ", output)
+        
         image_base64 = image64_encode(image_array=image_pred_array)
 
-        return JSONResponse(content={"pred_image": image_base64}), 201
+        return JSONResponse(content={"pred_image": image_base64, "output": output.class_name}), 201
     else:
         return JSONResponse({"pred_image": "Error"})
 
