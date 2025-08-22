@@ -32,6 +32,17 @@ services:
     - NODE_ENV=development
     - CHOKIDAR_USEPOLLING=true
 
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    networks:
+      - webnet
+
   nginx:
     image: nginx:stable-alpine
     ports:

@@ -9,6 +9,8 @@ COPY requirements.txt .
 
 RUN apt-get update -y && \
         apt-get install -y --no-install-recommends \
+        gcc \
+        libpq-dev \
         libgl1 \
         libglib2.0-0 && \
         pip install --no-cache-dir -r requirements.txt     

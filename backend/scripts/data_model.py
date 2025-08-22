@@ -14,3 +14,7 @@ class ImageDataOutput(BaseModel):
     class_name: list[str]
     prediction_time: float
     
+class Emotion(BaseModel):
+    name: str
+    emotion: str
+    

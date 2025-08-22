@@ -6,19 +6,26 @@ import cv2
 import uvicorn
 import json
 
+import models
+
+from sqlalchemy.orm import Session
+
 from dotenv import load_dotenv
-from fastapi import BackgroundTasks, FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, StreamingResponse
 from pydantic import BaseModel
+from typing import List, Annotated
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 logger = logging.getLogger(__name__)
 load_dotenv()
 
+from database import SessionLocal, engine
+
 from utils.ml_classifier import EmotionDetection
-from scripts.data_model import ImageDataInput, ImageDataOutput
+from scripts.data_model import ImageDataInput, ImageDataOutput, Emotion
 
 from utils.utils import (
     crop_face,
@@ -32,6 +39,8 @@ from utils.utils import (
 font = cv2.FONT_HERSHEY_SIMPLEX
 
 app = FastAPI()
+
+models.Base.metadata.create_all(bind=engine)
 
 # CORS (Cross-Origin Resource Sharing) middleware configuration
 origins = ["http://localhost:3000", "http://localhost:8080", "https://ai.emovio.com.br"]
@@ -74,6 +83,14 @@ image_props = {}
 
 vid_fmt = cv2.VideoWriter_fourcc("M", "J", "P", "G")
 
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+db_dependency = Annotated[Session, Depends(get_db)]
 
 def gen_frames():
     cam = cv2.VideoCapture(0)
@@ -204,6 +221,12 @@ async def get_users(req: Request):
     except Exception as e:
         return JSONResponse({"message": "Failed"})
 
+@app.post("/v1/emotions")
+async def emotions(em: Emotion, db: db_dependency):
+    db_emotion = models.Emotion(emotion=em.emotion)
+    db.add(db_emotion)
+    db.commit()
+    db.refresh(db_emotion)
 
 @app.post("/v1/login")
 async def login(req: Request):
