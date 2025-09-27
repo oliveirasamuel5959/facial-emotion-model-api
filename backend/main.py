@@ -117,7 +117,7 @@ def gen_frames():
 
     while True:
         success, frame = cam.read()
-
+        
         if not success:
             break
 
@@ -206,13 +206,11 @@ def gen_frames():
             b"--frame\r\n" b"Content-Type: image/jpeg\r\n\r\n" + frame_bytes + b"\r\n"
         )
 
-
 @app.get("/v1/video_feed")
 async def video_feed():
     return StreamingResponse(
         gen_frames(), media_type="multipart/x-mixed-replace; boundary=frame"
     )
-
 
 @app.get("/v1/users")
 async def get_users(req: Request):
@@ -245,17 +243,17 @@ async def login(req: Request):
             )
     else:
         return JSONResponse({"message": "Failed"})
+    
 
 
 @app.post("/v1/predictions/from/image")
-async def predict_image(req: Request):
+async def predict_image(req: Request, db: db_dependency):
     if req.method == "POST":
         data_pred.clear()
         data_req = await req.json()
         
-        print(data_req["image"]["content"][0:20])
-        # print("Data from pydantic: ", data)
-        
+        logger.info(f"data from post: {data_req['image']['content']}") 
+            
         image_array = image64_decode(data_req)
         face_image_array, num_faces, face_pos = face_detect(image_array)
         image_array_for_model = image_preprocessing(face_image_array)
@@ -264,6 +262,7 @@ async def predict_image(req: Request):
         pred_list, acc_list = emd.predict(
             image_array_list=image_array_for_model, model=model
         )
+        
         end = time.time()
         
         image_pred_array = draw_rectangle(
@@ -287,6 +286,12 @@ async def predict_image(req: Request):
         
         image_base64 = image64_encode(image_array=image_pred_array)
 
+        db_emotion = models.Emotion(emotion=pred_list[0])
+        
+        db.add(db_emotion)
+        db.commit()
+        db.refresh(db_emotion)
+        
         return JSONResponse(content={"pred_image": image_base64, "output": output.json()}), 201
     else:
         return JSONResponse({"pred_image": "Error"})

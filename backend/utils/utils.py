@@ -2,6 +2,7 @@ import base64
 import json
 import logging
 import os
+import requests
 from io import BytesIO
 
 import cv2
@@ -196,11 +197,22 @@ def draw_rectangle(image_array, num_faces, face_pos, pred_list, acc_list):
 
     return image_array
 
-
 def image64_decode(image_post_data):
-    logging.info("Start image decoding from base64 to PIL ndarray")
-    image = Image.open(BytesIO(base64.b64decode(image_post_data["image"]["content"])))
+    logging.info("Start image decoding from base64 or URL to PIL ndarray")
+
+    content = image_post_data['image']['content']
+
+    if content.startswith("http://") or content.startswith("https://"):
+        # Baixa a imagem da URL
+        response = requests.get(content)
+        if response.status_code != 200:
+            raise ValueError(f"Erro ao baixar imagem: {response.status_code}")
+        image = Image.open(BytesIO(response.content))
+    else:
+        # Decodifica direto de base64
+        image = Image.open(BytesIO(base64.b64decode(content)))
+
     image_array = np.array(image)
-    # image.save('images/post_image.jpg', 'JPEG')
     logging.info(f"Completed image decoding. Image shape is {image_array.shape}.")
+    
     return image_array
